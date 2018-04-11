@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:value="http://www.springframework.org/schema/value" xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+
+    <!-- 定时短信发送服务 -->
+    <bean id="smsPushMainJob" class="com.bj58.finance.mulan.service.sms.SmsPushMainJob" />
+
+    <!-- 还款提醒短信数据获取任务 -->
+    <bean id="repayNoticeSmsJob" class="com.bj58.finance.mulan.service.sms.RepayNoticeSmsJob" />
+
+    <!-- 每月12-14号的早上6点 -->
+    <task:scheduled-tasks>
+        <task:scheduled ref="repayNoticeSmsJob" method="run" cron="0 0 6 12-14 * ?"/>
+    </task:scheduled-tasks>
+
+    <!-- 风控进件任务处理器 -->
+    <bean id="riskIntoCaseExecutor" class="com.bj58.finance.mulan.service.task.DefaultTaskExecutor">
+        <property name="rejectedExecutionHandler" ref="rollBackPolicy"></property>
+        <property name="threadNamePrefix" value="风控进件任务Worker"/>
+    </bean>
+
+    <!-- 提现任务处理器 -->
+    <bean id="withdrawCashExecutor" class="com.bj58.finance.mulan.service.task.DefaultTaskExecutor">
+        <property name="rejectedExecutionHandler" ref="rollBackPolicy"></property>
+        <property name="threadNamePrefix" value="提现任务Worker"/>
+    </bean>
+
+    <!-- 还款任务处理器 -->
+    <bean id="repaymentExecutor" class="com.bj58.finance.mulan.service.task.DefaultTaskExecutor">
+        <property name="rejectedExecutionHandler" ref="rollBackPolicy"></property>
+        <property name="threadNamePrefix" value="还款任务Worker"/>
+    </bean>
+
+    <!-- 还款提醒任务处理器 -->
+    <bean id="repaymentNoticeExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="0" />
+        <property name="allowCoreThreadTimeOut" value="true" />
+        <property name="maxPoolSize" value="1" />
+        <property name="keepAliveSeconds" value="10" />
+        <property name="queueCapacity" value="10" />
+        <property name="threadNamePrefix" value="还款提醒任务处理线程"/>
+        <property name="waitForTasksToCompleteOnShutdown" value="true" />
+    </bean>
+
+
+    <bean id="retryStrategy" class="com.bj58.finance.mulan.service.task.retry.FibonacciRetryStrategy"
+          init-method="init">
+        <!--  第一次重试延迟时间（秒) -->
+        <!--  按照这个配置每次重试等待时间依次为 34秒，55秒，1份29秒，2分26秒，3分55秒，6分21秒,10分16秒，16分37秒，26分53秒，43分30秒，1小时10分23秒..... -->
+        <property name="firstRetrySecondsDelay" value="30"/>
+        <!-- 最多重试多少小时 -->
+        <property name="maxRetryHoursDelay" value="48"/>
+    </bean>
+
+    <bean id="taskMainJob" class="com.bj58.finance.mulan.service.task.TaskMainJob">
+        <property name="taskExecutorMap">
+            <map>
+                <entry key="RISK_INTO_CASE" value-ref="riskIntoCaseExecutor"></entry>
+                <entry key="WITHDRAW_CASH" value-ref="withdrawCashExecutor"></entry>
+                <entry key="REPAYMENT" value-ref="repaymentExecutor"></entry>
+                <entry key="REPAYMENT_NOTICE" value-ref="repaymentNoticeExecutor"></entry>
+            </map>
+        </property>
+        <property name="retryStrategy" ref="retryStrategy"></property>
+    </bean>
+
+</beans>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <contextName>mulan-task</contextName>
+    <property name="appName" value="mulan-task" />
+    <property name="rootDir" value="/opt/log/" />
+    <property name="logPattern" value="%d [%t] %-5p %c{72} - %m%n" />
+    <!--sql的日志格式由于都是从一个类里面打印出来的，所以这里对格式做了调整,就不显示logger名了-->
+    <property name="sqlLogPattern" value="%d [%t] %-5p - %m%n" />
+    <property name="hdfsLogPattern" value="%m%n" />
+    <property name="maxHistory" value="60"/>
+    <property name="maxFileSize" value="200MB"/>
+    <timestamp code="bySecond" datePattern="yyyyMMdd'T'HHmmss"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${logPattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!--所有日志都输出到all.log-->
+    <appender name="ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${rootDir}${appName}/${appName}.all.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${rootDir}${appName}/history/${appName}.all-%d{yyyy-MM-dd}_%i.log
+            </FileNamePattern>
+            <MaxHistory>${maxHistory}</MaxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>${maxFileSize}</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${logPattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>NEUTRAL</onMismatch>
+        </filter>
+    </appender>
+
+    <!--所有错误日志单独输出到error.log-->
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${rootDir}${appName}/${appName}.error.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${rootDir}${appName}/history/${appName}.error-%d{yyyy-MM-dd}_%i.log
+            </FileNamePattern>
+            <MaxHistory>${maxHistory}</MaxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>${maxFileSize}</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${logPattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!--记录所有sql日志,只记录info信息，产生的error记录到error.log里面-->
+    <appender name="SQL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${rootDir}${appName}/${appName}.sql.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${rootDir}${appName}/history/${appName}.sql-%d{yyyy-MM-dd}_%i.log
+            </FileNamePattern>
+            <MaxHistory>${maxHistory}</MaxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>${maxFileSize}</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${sqlLogPattern}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.bj58.finance.mulan" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="ALL"/>
+        <appender-ref ref="ERROR"/>
+    </logger>
+
+    <logger name="com.bj58.finance.mulan.dao.interceptor.SqlLogInterceptor" additivity="false">
+        <!--<appender-ref ref="CONSOLE" />-->
+        <appender-ref ref="SQL"/>
+    </logger>
+
+    <!--为了屏蔽里面的很多debug日志-->
+    <logger name="com.bj58.finance.mulan.dao.mapper" level="ERROR" additivity="false">
+        <!--<appender-ref ref="CONSOLE" />-->
+        <appender-ref ref="ALL" />
+    </logger>
+
+    <!--为了屏蔽里面的很多debug日志-->
+    <logger name="org.mybatis.spring" level="ERROR" additivity="false">
+        <!--<appender-ref ref="CONSOLE" />-->
+        <appender-ref ref="ALL" />
+    </logger>
+
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="ALL" />
+        <appender-ref ref="ERROR" />
+    </root>
+
+</configuration>

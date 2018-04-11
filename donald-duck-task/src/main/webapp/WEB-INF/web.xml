@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd "
+	version="2.5">
+	<display-name>Learn-Spring-Web</display-name>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<!-- 1. 首先 classpath是指 WEB-INF文件夹下的classes目录 2. classpath 和 classpath* 
+			区别： classpath：只会到你的class路径中查找找文件; classpath*：不仅包含class路径，还包括jar文件中(class路径)进行查找. -->
+		<!-- <param-value>/WEB-INF/classes/config/applicationContext.xml</param-value> -->
+		<param-value>classpath:applicationContext.xml</param-value>
+	</context-param>
+
+	<!-- ContextLoaderListener是Spring的监听器，它的作用就是启动Web容器时，自动装配ApplicationContext的配置信息。 
+		因为它实现了ServletContextListener这个接口，在web.xml配置这个监听器，启动容器时，就会默认执行它实现的方法。 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:spring_mvc.xml</param-value>
+		</init-param>
+		<!-- 设置为负数或者不设置的时,会在serlet第一次用到时才被调用,如果设置为1则会在容器启动的时候调用 init方法 -->
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+</web-app>

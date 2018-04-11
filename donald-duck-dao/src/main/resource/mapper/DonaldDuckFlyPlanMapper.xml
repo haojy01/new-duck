@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.donald.duck.dao.DonaldDuckFlyPlanMapper">
+	<resultMap id="BaseResultMap" type="org.donald.duck.bean.DonaldDuckFlyPlan">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="airline_company" property="airlineCompany"
+			jdbcType="VARCHAR" />
+		<result column="aircraft_no" property="aircraftNo" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="aircraft_type" property="aircraftType"
+			jdbcType="VARCHAR" />
+		<result column="take_off_time" property="takeOffTime" jdbcType="VARCHAR" />
+		<result column="take_off_airport" property="takeOffAirport"
+			jdbcType="VARCHAR" />
+		<result column="go_through" property="goThrough" jdbcType="VARCHAR" />
+		<result column="ladding_time" property="laddingTime" jdbcType="VARCHAR" />
+		<result column="landling_airport" property="landlingAirport"
+			jdbcType="VARCHAR" />
+		<result column="punctuality_rate" property="punctualityRate"
+			jdbcType="VARCHAR" />
+		<result column="gift" property="gift" jdbcType="VARCHAR" />
+		<result column="floor_price" property="floorPrice" jdbcType="VARCHAR" />
+		<result column="spider_batch" property="spiderBatch" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, airline_company, aircraft_no, aircraft_type, take_off_time,
+		take_off_airport,
+		go_through, ladding_time, landling_airport, punctuality_rate, gift, floor_price,
+		spider_batch, create_time,remark
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from donald_duck_fly_paln
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from donald_duck_fly_paln
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="org.donald.duck.bean.DonaldDuckFlyPlan">
+		insert into donald_duck_fly_paln (id, airline_company, aircraft_no,remark,
+		aircraft_type, take_off_time, take_off_airport,
+		go_through, ladding_time, landling_airport,
+		punctuality_rate, gift, floor_price,
+		spider_batch, create_time)
+		values (#{id,jdbcType=INTEGER}, #{airlineCompany,jdbcType=VARCHAR},
+		#{aircraftNo,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
+		#{aircraftType,jdbcType=VARCHAR}, #{takeOffTime,jdbcType=VARCHAR}, #{takeOffAirport,jdbcType=VARCHAR},
+		#{goThrough,jdbcType=VARCHAR}, #{laddingTime,jdbcType=VARCHAR},
+		#{landlingAirport,jdbcType=VARCHAR},
+		#{punctualityRate,jdbcType=VARCHAR}, #{gift,jdbcType=VARCHAR},
+		#{floorPrice,jdbcType=DECIMAL},
+		#{spiderBatch,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="org.donald.duck.bean.DonaldDuckFlyPlan">
+
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+
+
+		insert into donald_duck_fly_paln
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="airlineCompany != null">
+				airline_company,
+			</if>
+			<if test="aircraftNo != null">
+				aircraft_no,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="aircraftType != null">
+				aircraft_type,
+			</if>
+			<if test="takeOffTime != null">
+				take_off_time,
+			</if>
+			<if test="takeOffAirport != null">
+				take_off_airport,
+			</if>
+			<if test="goThrough != null">
+				go_through,
+			</if>
+			<if test="laddingTime != null">
+				ladding_time,
+			</if>
+			<if test="landlingAirport != null">
+				landling_airport,
+			</if>
+			<if test="punctualityRate != null">
+				punctuality_rate,
+			</if>
+			<if test="gift != null">
+				gift,
+			</if>
+			<if test="floorPrice != null">
+				floor_price,
+			</if>
+			<if test="spiderBatch != null">
+				spider_batch,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="airlineCompany != null">
+				#{airlineCompany,jdbcType=VARCHAR},
+			</if>
+			<if test="aircraftNo != null">
+				#{aircraftNo,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="aircraftType != null">
+				#{aircraftType,jdbcType=VARCHAR},
+			</if>
+			<if test="takeOffTime != null">
+				#{takeOffTime,jdbcType=VARCHAR},
+			</if>
+			<if test="takeOffAirport != null">
+				#{takeOffAirport,jdbcType=VARCHAR},
+			</if>
+			<if test="goThrough != null">
+				#{goThrough,jdbcType=VARCHAR},
+			</if>
+			<if test="laddingTime != null">
+				#{laddingTime,jdbcType=VARCHAR},
+			</if>
+			<if test="landlingAirport != null">
+				#{landlingAirport,jdbcType=VARCHAR},
+			</if>
+			<if test="punctualityRate != null">
+				#{punctualityRate,jdbcType=VARCHAR},
+			</if>
+			<if test="gift != null">
+				#{gift,jdbcType=VARCHAR},
+			</if>
+			<if test="floorPrice != null">
+				#{floorPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="spiderBatch != null">
+				#{spiderBatch,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="org.donald.duck.bean.DonaldDuckFlyPlan">
+		update donald_duck_fly_paln
+		<set>
+			<if test="airlineCompany != null">
+				airline_company = #{airlineCompany,jdbcType=VARCHAR},
+			</if>
+			<if test="aircraftNo != null">
+				aircraft_no = #{aircraftNo,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="aircraftType != null">
+				aircraft_type = #{aircraftType,jdbcType=VARCHAR},
+			</if>
+			<if test="takeOffTime != null">
+				take_off_time = #{takeOffTime,jdbcType=VARCHAR},
+			</if>
+			<if test="takeOffAirport != null">
+				take_off_airport = #{takeOffAirport,jdbcType=VARCHAR},
+			</if>
+			<if test="goThrough != null">
+				go_through = #{goThrough,jdbcType=VARCHAR},
+			</if>
+			<if test="laddingTime != null">
+				ladding_time = #{laddingTime,jdbcType=VARCHAR},
+			</if>
+			<if test="landlingAirport != null">
+				landling_airport = #{landlingAirport,jdbcType=VARCHAR},
+			</if>
+			<if test="punctualityRate != null">
+				punctuality_rate = #{punctualityRate,jdbcType=VARCHAR},
+			</if>
+			<if test="gift != null">
+				gift = #{gift,jdbcType=VARCHAR},
+			</if>
+			<if test="floorPrice != null">
+				floor_price = #{floorPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="spiderBatch != null">
+				spider_batch = #{spiderBatch,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="org.donald.duck.bean.DonaldDuckFlyPlan">
+		update donald_duck_fly_paln
+		set airline_company = #{airlineCompany,jdbcType=VARCHAR},
+		aircraft_no = #{aircraftNo,jdbcType=VARCHAR},
+		remark = #{remark,jdbcType=VARCHAR},
+		aircraft_type = #{aircraftType,jdbcType=VARCHAR},
+		take_off_time = #{takeOffTime,jdbcType=VARCHAR},
+		take_off_airport = #{takeOffAirport,jdbcType=VARCHAR},
+		go_through = #{goThrough,jdbcType=VARCHAR},
+		ladding_time = #{laddingTime,jdbcType=VARCHAR},
+		landling_airport = #{landlingAirport,jdbcType=VARCHAR},
+		punctuality_rate = #{punctualityRate,jdbcType=VARCHAR},
+		gift = #{gift,jdbcType=VARCHAR},
+		floor_price = #{floorPrice,jdbcType=DECIMAL},
+		spider_batch = #{spiderBatch,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

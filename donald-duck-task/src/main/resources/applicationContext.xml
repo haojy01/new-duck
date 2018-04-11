@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd ">
+
+	<!-- 注解1：<context:component-scanbase-package=" "> 
+		注解2：<context:annotation-config> 
+		1.一般情况两个注解不一起使用。
+		2. “注解1”扫描含有注解（@Component等）类，注入注解自动生效。 “注解2”只在xml和注解（注入）混合使用时，使注入注解生效。 -->
+	<context:component-scan base-package="com.bj58.finance.*">
+	</context:component-scan>
+
+	<bean id="customizedPropertyPlaceholderConfigurer"
+		class="org.donald.duck.task.CustomizedPropertyPlaceholderConfigurer">
+		<property name="fileEncoding" value="UTF-8" />
+		<property name="locations">
+			<list>
+				<value>classpath:key.properties</value>
+				<value>classpath:url.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<import resource="classpath*:applicationContext-task.xml" />
+
+</beans>
